@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// HeyGen helper for the /bbb (Benji Builds Businesses) pipeline.
+// HeyGen helper for the AutoClipperPro pipeline.
 // Auth: HEYGEN_API_KEY via X-Api-Key header.
 //
 // Usage:

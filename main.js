@@ -13,6 +13,7 @@ const DEFAULTS = {
   elevenKey: "", heygenKey: "", heygenAvatarId: "", heygenVoiceId: "",
   ffmpegPath: "ffmpeg", ffprobePath: "ffprobe", ytDlpPath: "yt-dlp", chromePath: "",
   outputDir: "", rclonePath: "", rcloneRemote: "", rcloneBase: "AutoClipperPro",
+  brandName: "", ctaUrl: "",
 };
 function loadCfg() {
   try { return { ...DEFAULTS, ...JSON.parse(fs.readFileSync(cfgPath(), "utf8")) }; }

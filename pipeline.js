@@ -34,13 +34,14 @@ async function runPipeline(url, jobId, onStage, cfg = {}) {
   const ff = cfg.ffmpegPath || "ffmpeg";
   const result = { dir };
 
+  const brand = { ACP_BRAND: cfg.brandName || "", ACP_CTA_URL: cfg.ctaUrl || "" };
   const base = {
     FFMPEG_PATH: cfg.ffmpegPath || "", FFPROBE_PATH: cfg.ffprobePath || "",
     XI_API_KEY: cfg.elevenKey || "", HEYGEN_API_KEY: cfg.heygenKey || "",
     OLLAMA_HOST: cfg.ollamaHost || "", BBB_VLM: cfg.localVlm || "qwen2.5vl:7b", BBB_LLM: cfg.localLlm || "qwen2.5:14b",
-    CHROME_PATH: cfg.chromePath || "", RCLONE_PATH: cfg.rclonePath || "",
+    CHROME_PATH: cfg.chromePath || "", RCLONE_PATH: cfg.rclonePath || "", ...brand,
   };
-  const cloudEnv = { BBB_CLOUD_PROVIDER: cfg.cloudProvider || "anthropic", BBB_CLOUD_KEY: cfg.cloudKey || "", BBB_CLOUD_MODEL: cfg.cloudModel || "", BBB_CLOUD_BASEURL: cfg.cloudBaseUrl || "" };
+  const cloudEnv = { BBB_CLOUD_PROVIDER: cfg.cloudProvider || "anthropic", BBB_CLOUD_KEY: cfg.cloudKey || "", BBB_CLOUD_MODEL: cfg.cloudModel || "", BBB_CLOUD_BASEURL: cfg.cloudBaseUrl || "", ...brand };
   const useCloud = cfg.brain === "cloud" && cfg.cloudKey;
   const haveOllama = !!cfg.ollamaHost;
 

@@ -10,8 +10,8 @@ const [voFile, outAss, Ws = "1080", Hs = "1920", capYs] = process.argv.slice(2);
 const W = +Ws, H = +Hs;
 const capY = capYs ? +capYs : Math.round(H * 0.73);
 const ctaY = Math.round(H * 0.4);
-const CTA = process.env.BBB_CTA || "GET THE FULL PLAN FREE";
-const CTA_URL = process.env.BBB_CTA_URL || "BenjisAIEmpire.com";
+const CTA = process.env.ACP_CTA || process.env.BBB_CTA || "GET THE FULL PLAN FREE";
+const CTA_URL = process.env.ACP_CTA_URL || process.env.BBB_CTA_URL || "";
 
 // 1) word timings
 const form = new FormData();
@@ -43,7 +43,7 @@ let ev = "";
 for (const c of chunks) ev += `Dialogue: 0,${t(c.start)},${t(c.end)},Cap,,0,0,0,,{\\pos(${cx},${capY})}${c.text}\n`;
 
 // 3) end CTA flash (blink in last ~2.8s, then hold)
-const ctaText = `{\\b1}${CTA}\\N{\\fs60}${CTA_URL}`;
+const ctaText = `{\\b1}${CTA}` + (CTA_URL ? `\\N{\\fs60}${CTA_URL}` : "");
 let cur = Math.max(0, dur - 2.8);
 for (let k = 0; k < 5 && cur < dur - 1.0; k++) {
   ev += `Dialogue: 1,${t(cur)},${t(cur + 0.22)},CTA,,0,0,0,,{\\pos(${cx},${ctaY})}${ctaText}\n`;

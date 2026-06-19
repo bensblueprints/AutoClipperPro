@@ -77,6 +77,7 @@ window.api.getState().then(render);
 const settingsEl = $("settings");
 const FIELDS = ["cloudProvider:provider", "cloudKey", "cloudModel", "cloudBaseUrl",
   "ollamaHost", "localVlm", "localLlm", "elevenKey", "heygenKey", "heygenAvatarId", "heygenVoiceId",
+  "brandName", "ctaUrl",
   "ffmpegPath", "ffprobePath", "ytDlpPath", "chromePath", "outputDir", "rclonePath", "rcloneRemote"];
 const fid = (f) => f.includes(":") ? f.split(":")[1] : f;
 const fkey = (f) => f.split(":")[0];

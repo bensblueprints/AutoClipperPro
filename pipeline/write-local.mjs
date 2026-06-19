@@ -21,14 +21,18 @@ async function gen(prompt) {
   return (j.response || "").trim();
 }
 
-const PLAN = `You are a sharp business analyst writing for "Benji's AI Empire". From these notes about a viral business, write a concise, punchy **business plan in Markdown** for launching it in the USA. Use these sections: # Title, ## The Insight, ## The Product, ## US Market & Competitors, ## Startup Cost & Unit Economics, ## China Import Sourcing (FOB + landed cost ranges), ## Revenue Potential, ## Go-To-Market, ## 30/60/90-Day Launch, ## Risks. Be specific with dollar figures and realistic. Notes:\n"""${teardown}"""`;
+const BRAND = process.env.ACP_BRAND || "";
+const CTA_URL = process.env.ACP_CTA_URL || "";
+const brandFor = BRAND ? ` writing for "${BRAND}"` : "";
+const ctaLine = CTA_URL ? `CTA (grab the full business plan FREE at ${CTA_URL})` : "a short CTA to follow for more";
+const PLAN = `You are a sharp business analyst${brandFor}. From these notes about a viral business, write a concise, punchy **business plan in Markdown** for launching it in the USA. Use these sections: # Title, ## The Insight, ## The Product, ## US Market & Competitors, ## Startup Cost & Unit Economics, ## China Import Sourcing (FOB + landed cost ranges), ## Revenue Potential, ## Go-To-Market, ## 30/60/90-Day Launch, ## Risks. Be specific with dollar figures and realistic. Notes:\n"""${teardown}"""`;
 
 const DAY = process.env.BBB_DAY || "1";
-const SCRIPT = `Write a 75-90 second short-form video script in Benji's voice (confident, direct, no fluff).
+const SCRIPT = `Write a 75-90 second short-form video script in a confident, direct voice (no fluff).
 It MUST open with these two spoken lines, in order:
 1) "Day ${DAY} of genius business ideas, follow for more."
 2) A hook based on the subject: if the business centers on a PERSON doing a service/skill/trade, say "Look at this freaking guy right here" (use "girl" if the person is a woman); if it centers on a PRODUCT / object / thing, say "Look at this freaking thing right here."
-Then continue: THE INSIGHT, PROOF/NUMBERS, HOW TO BUILD IT (incl. China sourcing), HOW TO START, CTA (grab the full business plan FREE at BenjisAIEmpire.com). Mark sections in brackets. Notes:\n"""${teardown}"""`;
+Then continue: THE INSIGHT, PROOF/NUMBERS, HOW TO BUILD IT (incl. China sourcing), HOW TO START, ${ctaLine}. Mark sections in brackets. Notes:\n"""${teardown}"""`;
 
 console.error(`writing with ${LLM} @ ${HOST} ...`);
 const plan = await gen(PLAN);
