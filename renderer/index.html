@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';" />
+  <title>AutoClipperPro</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="head">
+    <div class="logo">⚡</div>
+    <div class="head-text">
+      <h1>AutoClipperPro</h1>
+      <p class="sub">Paste reels → queue → auto business plan + breakdown video</p>
+    </div>
+    <button id="gear" class="gear" title="Settings">⚙</button>
+  </header>
+
+  <section id="settings" class="settings hidden">
+    <div class="set-group">Brain (watch + writing)</div>
+    <div class="set-row">
+      <span class="set-label">Mode</span>
+      <label class="seg"><input type="radio" name="brain" value="cloud" checked> Cloud (API)</label>
+      <label class="seg"><input type="radio" name="brain" value="local"> Local (your GPU)</label>
+    </div>
+    <div id="cloud-fields">
+      <div class="set-row"><span class="set-label">Provider</span>
+        <select id="provider"><option value="anthropic">Claude (Anthropic)</option><option value="openai">OpenAI-compatible</option></select>
+      </div>
+      <div class="set-row"><span class="set-label">API key</span><input id="cloudKey" type="password" placeholder="sk-ant-… or sk-…" autocomplete="off"></div>
+      <div class="set-row"><span class="set-label">Model</span><input id="cloudModel" type="text" placeholder="claude-opus-4-8"></div>
+      <div class="set-row" id="baseRow"><span class="set-label">Base URL</span><input id="cloudBaseUrl" type="text" placeholder="https://api.openai.com/v1 (OpenAI-compatible only)"></div>
+    </div>
+    <div id="local-fields">
+      <div class="set-row"><span class="set-label">Ollama host</span><input id="ollamaHost" type="text" placeholder="http://localhost:11434"></div>
+      <div class="set-row"><span class="set-label">Vision model</span><input id="localVlm" type="text" placeholder="qwen2.5vl:7b"></div>
+      <div class="set-row"><span class="set-label">Text model</span><input id="localLlm" type="text" placeholder="qwen2.5:14b"></div>
+    </div>
+
+    <div class="set-group">Voice &amp; avatar (required)</div>
+    <div class="set-row"><span class="set-label">ElevenLabs key</span><input id="elevenKey" type="password" placeholder="for transcription + captions" autocomplete="off"></div>
+    <div class="set-row"><span class="set-label">HeyGen key</span><input id="heygenKey" type="password" placeholder="HeyGen API key (paid plan)" autocomplete="off"></div>
+    <div class="set-row"><span class="set-label">Avatar ID</span><input id="heygenAvatarId" type="text" placeholder="your HeyGen avatar id"></div>
+    <div class="set-row"><span class="set-label">Voice ID</span><input id="heygenVoiceId" type="text" placeholder="your HeyGen voice id"></div>
+
+    <details class="set-adv"><summary>Advanced (tool paths · output · Google Drive)</summary>
+      <div class="set-row"><span class="set-label">ffmpeg</span><input id="ffmpegPath" type="text" placeholder="ffmpeg (or full path)"></div>
+      <div class="set-row"><span class="set-label">ffprobe</span><input id="ffprobePath" type="text" placeholder="ffprobe (or full path)"></div>
+      <div class="set-row"><span class="set-label">yt-dlp</span><input id="ytDlpPath" type="text" placeholder="yt-dlp (or full path)"></div>
+      <div class="set-row"><span class="set-label">Chrome</span><input id="chromePath" type="text" placeholder="path to chrome/chromium (for PDF, optional)"></div>
+      <div class="set-row"><span class="set-label">Output dir</span><input id="outputDir" type="text" placeholder="defaults to ~/AutoClipperPro-output"></div>
+      <div class="set-row"><span class="set-label">rclone</span><input id="rclonePath" type="text" placeholder="path to rclone (optional, for Drive)"></div>
+      <div class="set-row"><span class="set-label">rclone remote</span><input id="rcloneRemote" type="text" placeholder="e.g. gdrive (optional)"></div>
+    </details>
+
+    <div class="set-actions"><span id="setMsg" class="set-msg"></span><button id="saveCfg">Save</button></div>
+  </section>
+
+  <section class="composer">
+    <textarea id="urls" rows="3" placeholder="Paste one or more reel links (YouTube / Instagram / TikTok / Facebook), one per line…" spellcheck="false"></textarea>
+    <div class="composer-row">
+      <span class="hint" id="hint">accuracy over speed · ~5–10 min per reel</span>
+      <button id="add">Add to Queue ↵</button>
+    </div>
+  </section>
+
+  <section class="queue-head">
+    <span id="qcount">Queue empty</span>
+    <button id="clear" class="ghost">Clear finished</button>
+  </section>
+  <div id="queue" class="queue"></div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

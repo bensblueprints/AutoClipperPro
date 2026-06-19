@@ -1,0 +1,32 @@
+{
+  "name": "autoclipperpro",
+  "productName": "AutoClipperPro",
+  "version": "1.0.0",
+  "description": "Paste a reel link → AI watches it, researches the business, writes a plan, and renders a captioned breakdown video with your avatar. Bring your own API keys.",
+  "main": "main.js",
+  "author": "AutoClipperPro",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "jimp": "^0.22.12",
+    "marked": "^12.0.2"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "pro.autoclipper.app",
+    "productName": "AutoClipperPro",
+    "files": ["main.js", "preload.js", "pipeline.js", "renderer/**/*", "pipeline/**/*"],
+    "directories": { "output": "release" },
+    "win": { "target": ["nsis"], "signAndEditExecutable": false },
+    "nsis": { "oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true, "shortcutName": "AutoClipperPro" },
+    "mac": { "target": ["dmg"], "category": "public.app-category.video" }
+  }
+}
