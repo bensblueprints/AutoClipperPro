@@ -19,6 +19,14 @@ Drop in a queue of links and it churns through them one at a time. Accuracy over
 
 ---
 
+## ⬇️ Download
+
+**[Download for Windows (AutoClipperPro-Setup-1.0.0.exe)](https://github.com/bensblueprints/AutoClipperPro/releases/latest)** — run the installer, then follow the setup steps below.
+
+macOS: build from source with `npm run dist:mac` for now.
+
+---
+
 ## Quick start
 
 1. **Install the prerequisites** (see below).
