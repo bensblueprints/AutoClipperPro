@@ -28,11 +28,18 @@ let counter = 0;
 function broadcast() { if (win) win.webContents.send("state", { queue, stages: STAGES }); }
 
 function addUrls(text) {
-  const urls = (text.match(/https?:\/\/[^\s]+/g) || []).map((u) => u.replace(/[.,)]+$/, ""));
-  for (const url of urls) queue.push({ id: ++counter, url, status: "queued", stage: null, msg: "", result: null, error: null });
+  // One job per line. Multiple links on the SAME line are stitched into one longer video.
+  let added = 0;
+  for (const line of String(text).split(/\r?\n/)) {
+    const urls = (line.match(/https?:\/\/[^\s]+/g) || []).map((u) => u.replace(/[.,)]+$/, ""));
+    if (!urls.length) continue;
+    const label = urls.length > 1 ? `${urls.length} clips → ${urls[0]}` : urls[0];
+    queue.push({ id: ++counter, urls, url: label, status: "queued", stage: null, msg: "", result: null, error: null });
+    added++;
+  }
   broadcast();
   pump();
-  return urls.length;
+  return added;
 }
 
 async function pump() {
@@ -42,7 +49,7 @@ async function pump() {
   processing = true;
   job.status = "running"; broadcast();
   try {
-    const res = await runPipeline(job.url, `job-${job.id}-${Date.now()}`, (stage, state, msg) => {
+    const res = await runPipeline(job.urls || job.url, `job-${job.id}-${Date.now()}`, (stage, state, msg) => {
       job.stage = stage; job.msg = msg || ""; job.stageState = state; broadcast();
     }, config || loadCfg());
     job.status = "done"; job.result = res; job.stage = "done"; job.msg = res.title || "";

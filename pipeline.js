@@ -47,10 +47,32 @@ async function runPipeline(url, jobId, onStage, cfg = {}) {
 
   const findClip = () => fs.readdirSync(dir).filter((f) => f.endsWith(".mp4") && !/avatar|final|clean/i.test(f)).map((f) => path.join(dir, f))[0];
 
-  // 1) download
+  // 1) download — single URL, or stitch multiple URLs into one longer reel (no looping)
   onStage("download", "running");
-  await ps("grab.ps1", [url], { env: { ...base, CLIP_GRAB_DIR: dir, CLIP_GRAB_NOOPEN: "1", YT_DLP_PATH: cfg.ytDlpPath || "yt-dlp" } });
-  const clip = findClip();
+  const urls = (Array.isArray(url) ? url : [url]).filter(Boolean);
+  const grabEnv = { ...base, CLIP_GRAB_NOOPEN: "1", YT_DLP_PATH: cfg.ytDlpPath || "yt-dlp" };
+  let clip;
+  if (urls.length <= 1) {
+    await ps("grab.ps1", [urls[0]], { env: { ...grabEnv, CLIP_GRAB_DIR: dir } });
+    clip = findClip();
+  } else {
+    const parts = [];
+    for (let i = 0; i < urls.length; i++) {
+      onStage("download", "running", `clip ${i + 1}/${urls.length}`);
+      const sub = path.join(dir, `src${i + 1}`);
+      fs.mkdirSync(sub, { recursive: true });
+      await ps("grab.ps1", [urls[i]], { env: { ...grabEnv, CLIP_GRAB_DIR: sub } });
+      const got = fs.readdirSync(sub).filter((f) => f.endsWith(".mp4")).map((f) => path.join(sub, f))
+        .sort((a, b) => fs.statSync(b).size - fs.statSync(a).size)[0];
+      if (!got) throw new Error(`download ${i + 1} produced no file`);
+      const part = path.join(dir, `clip${i + 1}.mp4`);
+      fs.renameSync(got, part);
+      parts.push(part);
+    }
+    onStage("download", "running", `stitching ${parts.length} clips`);
+    clip = path.join(dir, "clip.mp4");
+    await node("stitch.mjs", [clip, ...parts], { env: base });
+  }
   if (!clip) throw new Error("download produced no file");
   onStage("download", "done");
 
